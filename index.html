@@ -1,0 +1,86 @@
+import React, { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { motion } from "framer-motion";
+
+const propiedades = [
+  {
+    id: 1,
+    titulo: "Apartamento en Bucaramanga",
+    imagen: "https://via.placeholder.com/300",
+    precio: "$250,000,000 COP",
+    descripcion: "Hermoso apartamento con 3 habitaciones y 2 baños.",
+  },
+  {
+    id: 2,
+    titulo: "Casa en Floridablanca",
+    imagen: "https://via.placeholder.com/300",
+    precio: "$450,000,000 COP",
+    descripcion: "Casa amplia con jardín y garaje para 2 carros.",
+  },
+];
+
+export default function Inmobiliaria() {
+  const [selectedProperty, setSelectedProperty] = useState(null);
+  const [formData, setFormData] = useState({ nombre: "", telefono: "", mensaje: "" });
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    alert("Mensaje enviado. Nos pondremos en contacto pronto.");
+    setFormData({ nombre: "", telefono: "", mensaje: "" });
+  };
+
+  return (
+    <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <h1 className="text-2xl font-bold mb-4">Propiedades Disponibles</h1>
+        <div className="grid gap-4">
+          {propiedades.map((prop) => (
+            <motion.div
+              key={prop.id}
+              whileHover={{ scale: 1.05 }}
+              className="cursor-pointer"
+              onClick={() => setSelectedProperty(prop)}
+            >
+              <Card>
+                <CardContent>
+                  <img src={prop.imagen} alt={prop.titulo} className="w-full h-40 object-cover rounded-xl" />
+                  <h2 className="text-xl font-semibold mt-2">{prop.titulo}</h2>
+                  <p className="text-gray-600">{prop.precio}</p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      {selectedProperty && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="p-6 border rounded-xl shadow-md"
+        >
+          <h2 className="text-2xl font-bold">{selectedProperty.titulo}</h2>
+          <img src={selectedProperty.imagen} alt={selectedProperty.titulo} className="w-full h-60 object-cover rounded-xl mt-2" />
+          <p className="text-lg mt-2">{selectedProperty.descripcion}</p>
+          <p className="text-xl font-semibold mt-2">{selectedProperty.precio}</p>
+          
+          <h3 className="text-lg font-bold mt-4">Solicitar Información</h3>
+          <form onSubmit={handleSubmit} className="mt-2">
+            <Input name="nombre" placeholder="Tu Nombre" value={formData.nombre} onChange={handleInputChange} required className="mb-2" />
+            <Input name="telefono" placeholder="Tu Teléfono" value={formData.telefono} onChange={handleInputChange} required className="mb-2" />
+            <Textarea name="mensaje" placeholder="Mensaje" value={formData.mensaje} onChange={handleInputChange} className="mb-2" />
+            <Button type="submit" className="w-full">Enviar Consulta</Button>
+          </form>
+        </motion.div>
+      )}
+    </div>
+  );
+}
